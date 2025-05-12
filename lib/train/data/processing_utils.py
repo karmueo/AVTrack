@@ -32,10 +32,10 @@ def sample_target(im, target_bb, search_area_factor, output_sz=None, mask=None):
     if crop_sz < 1:
         raise Exception('Too small bounding box.')
 
-    x1 = round(x + 0.5 * w - crop_sz * 0.5)
+    x1 = math.floor(x + 0.5 * w - crop_sz * 0.5)
     x2 = x1 + crop_sz
 
-    y1 = round(y + 0.5 * h - crop_sz * 0.5)
+    y1 = math.floor(y + 0.5 * h - crop_sz * 0.5)
     y2 = y1 + crop_sz
 
     x1_pad = max(0, -x1)

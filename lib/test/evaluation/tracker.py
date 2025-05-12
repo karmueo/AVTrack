@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 
 
-def trackerlist(name: str, parameter_name: str, dataset_name: str, run_ids = None, display_name: str = None,
+def trackerlist(name: str, parameter_name: str, dataset_name: str, run_ids=None, display_name: str = None,
                 result_only=False):
     """Generate list of trackers.
     args:
@@ -45,16 +45,19 @@ class Tracker:
 
         env = env_settings()
         if self.run_id is None:
-            self.results_dir = '{}/{}/{}'.format(env.results_path, self.name, self.parameter_name)
+            self.results_dir = '{}/{}/{}'.format(
+                env.results_path, self.name, self.parameter_name)
         else:
-            self.results_dir = '{}/{}/{}_{:03d}'.format(env.results_path, self.name, self.parameter_name, self.run_id)
+            self.results_dir = '{}/{}/{}_{:03d}'.format(
+                env.results_path, self.name, self.parameter_name, self.run_id)
         if result_only:
             self.results_dir = '{}/{}'.format(env.results_path, self.name)
 
         tracker_module_abspath = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                               '..', 'tracker', '%s.py' % self.name))
         if os.path.isfile(tracker_module_abspath):
-            tracker_module = importlib.import_module('lib.test.tracker.{}'.format(self.name))
+            tracker_module = importlib.import_module(
+                'lib.test.tracker.{}'.format(self.name))
             self.tracker_class = tracker_module.get_tracker_class()
         else:
             self.tracker_class = None
@@ -168,17 +171,21 @@ class Tracker:
         params.param_name = self.parameter_name
         # self._init_visdom(visdom_info, debug_)
 
-        multiobj_mode = getattr(params, 'multiobj_mode', getattr(self.tracker_class, 'multiobj_mode', 'default'))
+        multiobj_mode = getattr(params, 'multiobj_mode', getattr(
+            self.tracker_class, 'multiobj_mode', 'default'))
 
         if multiobj_mode == 'default':
             tracker = self.create_tracker(params)
 
         elif multiobj_mode == 'parallel':
-            tracker = MultiObjectWrapper(self.tracker_class, params, self.visdom, fast_load=True)
+            tracker = MultiObjectWrapper(
+                self.tracker_class, params, self.visdom, fast_load=True)
         else:
-            raise ValueError('Unknown multi object mode {}'.format(multiobj_mode))
+            raise ValueError(
+                'Unknown multi object mode {}'.format(multiobj_mode))
 
-        assert os.path.isfile(videofilepath), "Invalid param {}".format(videofilepath)
+        assert os.path.isfile(
+            videofilepath), "Invalid param {}".format(videofilepath)
         ", videofilepath must be a valid videofile"
 
         output_boxes = []
@@ -209,7 +216,8 @@ class Tracker:
                 cv.putText(frame_disp, 'Select target ROI and press ENTER', (20, 30), cv.FONT_HERSHEY_COMPLEX_SMALL,
                            1.5, (0, 0, 0), 1)
 
-                x, y, w, h = cv.selectROI(display_name, frame_disp, fromCenter=False)
+                x, y, w, h = cv.selectROI(
+                    display_name, frame_disp, fromCenter=False)
                 init_state = [x, y, w, h]
                 tracker.initialize(frame, _build_init_info(init_state))
                 output_boxes.append(init_state)
@@ -229,7 +237,7 @@ class Tracker:
             output_boxes.append(state)
 
             cv.rectangle(frame_disp, (state[0], state[1]), (state[2] + state[0], state[3] + state[1]),
-                         (0, 255, 0), 5)
+                         (0, 255, 0), 1)
 
             font_color = (0, 0, 0)
             cv.putText(frame_disp, 'Tracking!', (20, 30), cv.FONT_HERSHEY_COMPLEX_SMALL, 1,
@@ -252,7 +260,8 @@ class Tracker:
                            (0, 0, 0), 1)
 
                 cv.imshow(display_name, frame_disp)
-                x, y, w, h = cv.selectROI(display_name, frame_disp, fromCenter=False)
+                x, y, w, h = cv.selectROI(
+                    display_name, frame_disp, fromCenter=False)
                 init_state = [x, y, w, h]
                 tracker.initialize(frame, _build_init_info(init_state))
                 output_boxes.append(init_state)
@@ -265,16 +274,17 @@ class Tracker:
             if not os.path.exists(self.results_dir):
                 os.makedirs(self.results_dir)
             video_name = Path(videofilepath).stem
-            base_results_path = os.path.join(self.results_dir, 'video_{}'.format(video_name))
+            base_results_path = os.path.join(
+                self.results_dir, 'video_{}'.format(video_name))
 
             tracked_bb = np.array(output_boxes).astype(int)
             bbox_file = '{}.txt'.format(base_results_path)
             np.savetxt(bbox_file, tracked_bb, delimiter='\t', fmt='%d')
 
-
     def get_parameters(self):
         """Get parameters."""
-        param_module = importlib.import_module('lib.test.parameter.{}'.format(self.name))
+        param_module = importlib.import_module(
+            'lib.test.parameter.{}'.format(self.name))
         params = param_module.parameters(self.parameter_name)
         return params
 
@@ -286,6 +296,3 @@ class Tracker:
             return decode_img(image_file[0], image_file[1])
         else:
             raise ValueError("type of image_file should be str or list")
-
-
-

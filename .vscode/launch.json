@@ -1,0 +1,48 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "video_demo",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "tracking/video_demo.py",
+            "console": "integratedTerminal",
+            "args": [
+                "avtrack",
+                "deit_tiny_patch16_224",
+                "/home/tl/data/ball/vidoes/4月29日.mp4",
+                "--debug", "0",
+            ],
+            "env": {
+                "DISPLAY": "localhost:10.0",
+            }
+        },
+        {
+            "name": "export",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "export.py",
+            "args": [
+                "avtrack",
+                "deit_tiny_patch16_224",
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+        },
+        {
+            "name": "test_onnx",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "test_onnx.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "DISPLAY": "localhost:10.0",
+            }
+        },
+    ]
+}
